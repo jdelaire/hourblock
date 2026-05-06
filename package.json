@@ -1,0 +1,37 @@
+{
+  "name": "hourblock",
+  "description": "Local-first billable time tracker with live session metering, client rates, monthly totals, and CSV export.",
+  "private": true,
+  "version": "0.1.0",
+  "type": "module",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/jdelaire/hourblock.git"
+  },
+  "bugs": {
+    "url": "https://github.com/jdelaire/hourblock/issues"
+  },
+  "homepage": "https://github.com/jdelaire/hourblock#readme",
+  "keywords": [
+    "time-tracking",
+    "billing",
+    "vue",
+    "vite",
+    "local-first"
+  ],
+  "scripts": {
+    "dev": "vite --host 127.0.0.1",
+    "build": "vite build",
+    "preview": "vite preview --host 127.0.0.1",
+    "test": "vitest run"
+  },
+  "dependencies": {
+    "@tailwindcss/vite": "^4.1.16",
+    "vue": "^3.5.22"
+  },
+  "devDependencies": {
+    "@vitejs/plugin-vue": "^6.0.1",
+    "vite": "^7.1.12",
+    "vitest": "^3.2.4"
+  }
+}

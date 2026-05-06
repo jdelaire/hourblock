@@ -1,0 +1,16 @@
+node_modules
+dist
+.DS_Store
+*.local
+
+# Local environment and deployment configuration
+.env
+.env.*
+!.env.example
+.npmrc
+.vercel
+.netlify
+
+# Editor and OS metadata
+.idea
+.vscode
