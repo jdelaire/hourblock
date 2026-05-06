@@ -341,6 +341,26 @@ export function toCsv(entries) {
   return rows.map((row) => row.map(escapeCsv).join(',')).join('\n')
 }
 
+function slugifyFilenamePart(value, fallback) {
+  const slug = cleanText(value)
+    .replace(/[^a-z0-9]+/gi, '-')
+    .replace(/^-|-$/g, '')
+    .toLowerCase()
+
+  return slug || fallback
+}
+
+export function getCsvFilename(monthKey, clientName = 'all') {
+  const monthSlug = /^\d{4}-\d{2}$/.test(cleanText(monthKey))
+    ? cleanText(monthKey)
+    : slugifyFilenamePart(monthKey, 'unknown-month')
+  const clientSlug = cleanText(clientName).toLocaleLowerCase() === 'all'
+    ? 'all-clients'
+    : slugifyFilenamePart(clientName, 'no-client')
+
+  return `hourblock-${monthSlug}-${clientSlug}.csv`
+}
+
 function readJson(storage, key, fallback) {
   try {
     const raw = storage.getItem(key)

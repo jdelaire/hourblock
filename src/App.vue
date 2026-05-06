@@ -9,6 +9,7 @@ import {
   formatLocalDate,
   formatMonthLabel,
   getClientTotals,
+  getCsvFilename,
   getEntryMonths,
   getEstimatedRevenue,
   getEstimatedSessionFare,
@@ -272,12 +273,9 @@ function exportCsv() {
   const blob = new Blob([csv], { type: 'text/csv;charset=utf-8' })
   const url = URL.createObjectURL(blob)
   const link = document.createElement('a')
-  const clientSlug = exportClient.value === EXPORT_ALL_CLIENTS
-    ? 'all-clients'
-    : exportClient.value.trim().replace(/[^a-z0-9]+/gi, '-').replace(/^-|-$/g, '').toLowerCase()
 
   link.href = url
-  link.download = `hourblock-${formatLocalDate()}-${clientSlug}.csv`
+  link.download = getCsvFilename(selectedMonth.value, exportClient.value)
   document.body.appendChild(link)
   link.click()
   link.remove()

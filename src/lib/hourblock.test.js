@@ -11,6 +11,7 @@ import {
   getEstimatedRevenue,
   getEstimatedSessionFare,
   getClientTotals,
+  getCsvFilename,
   getMonthlyBillableMinutes,
   getUniqueClients,
   getWeeklyBillableMinutes,
@@ -275,6 +276,12 @@ describe('HourBlock time tracking logic', () => {
       'Date,Client,Start,End,Duration hours,Note,Billable',
       '2026/04/27,Acme Studio,09:00,11:30,2.5,"Facebook page audit and ""priority"" recommendations",Yes',
     ].join('\n'))
+  })
+
+  it('builds CSV filenames from the selected data month and client', () => {
+    expect(getCsvFilename('2026-04', 'Acme Studio')).toBe('hourblock-2026-04-acme-studio.csv')
+    expect(getCsvFilename('2026-04', 'all')).toBe('hourblock-2026-04-all-clients.csv')
+    expect(getCsvFilename('2026-04', 'Client / Research & Dev')).toBe('hourblock-2026-04-client-research-dev.csv')
   })
 
   it('filters export entries by selected client and treats all as unfiltered', () => {
