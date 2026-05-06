@@ -1,6 +1,9 @@
 export const ENTRIES_STORAGE_KEY = 'hourblock.entries.v1'
 export const ACTIVE_SESSION_STORAGE_KEY = 'hourblock.activeSession.v1'
 export const CLIENTS_STORAGE_KEY = 'hourblock.clients.v1'
+const LEGACY_ENTRIES_STORAGE_KEY = 'blocklog.entries.v1'
+const LEGACY_ACTIVE_SESSION_STORAGE_KEY = 'blocklog.activeSession.v1'
+const LEGACY_CLIENTS_STORAGE_KEY = 'blocklog.clients.v1'
 
 const pad = (value) => String(value).padStart(2, '0')
 
@@ -347,8 +350,28 @@ function readJson(storage, key, fallback) {
   }
 }
 
+function readJsonWithLegacy(storage, key, legacyKey, fallback) {
+  try {
+    const raw = storage.getItem(key)
+    if (raw) return JSON.parse(raw)
+  } catch {
+    // Keep loading resilient if current storage is malformed.
+  }
+
+  try {
+    const legacyRaw = storage.getItem(legacyKey)
+    if (!legacyRaw) return fallback
+
+    const value = JSON.parse(legacyRaw)
+    storage.setItem?.(key, legacyRaw)
+    return value
+  } catch {
+    return fallback
+  }
+}
+
 export function loadEntries(storage = window.localStorage) {
-  const entries = readJson(storage, ENTRIES_STORAGE_KEY, [])
+  const entries = readJsonWithLegacy(storage, ENTRIES_STORAGE_KEY, LEGACY_ENTRIES_STORAGE_KEY, [])
   if (!Array.isArray(entries)) return []
 
   return entries
@@ -379,7 +402,7 @@ export function saveEntries(entries, storage = window.localStorage) {
 }
 
 export function loadClients(storage = window.localStorage) {
-  const storedClients = readJson(storage, CLIENTS_STORAGE_KEY, [])
+  const storedClients = readJsonWithLegacy(storage, CLIENTS_STORAGE_KEY, LEGACY_CLIENTS_STORAGE_KEY, [])
   if (!Array.isArray(storedClients)) return []
 
   const clientsByName = new Map()
@@ -401,7 +424,12 @@ export function saveClients(clients, storage = window.localStorage) {
 }
 
 export function loadActiveSession(storage = window.localStorage) {
-  const session = readJson(storage, ACTIVE_SESSION_STORAGE_KEY, null)
+  const session = readJsonWithLegacy(
+    storage,
+    ACTIVE_SESSION_STORAGE_KEY,
+    LEGACY_ACTIVE_SESSION_STORAGE_KEY,
+    null,
+  )
   if (!session || typeof session !== 'object') return null
 
   return {

@@ -14,6 +14,7 @@ import {
   getMonthlyBillableMinutes,
   getUniqueClients,
   getWeeklyBillableMinutes,
+  loadActiveSession,
   loadClients,
   loadEntries,
   stopSession,
@@ -194,6 +195,67 @@ describe('HourBlock time tracking logic', () => {
 
     expect(loadClients(storage)).toEqual([
       { name: 'Acme Studio', hourlyRate: 125.5, website: 'https://example.com' },
+    ])
+  })
+
+  it('recovers entries from legacy BlockLog local storage', () => {
+    const storedEntry = {
+      id: 'entry-legacy',
+      client: 'Acme Studio',
+      date: '2026-04-27',
+      startTime: '09:00',
+      endTime: '11:30',
+      durationMinutes: 150,
+      note: 'Legacy entry',
+      billable: true,
+    }
+    const writes = []
+    const storage = {
+      getItem: (key) => (key === 'blocklog.entries.v1' ? JSON.stringify([storedEntry]) : null),
+      setItem: (key, value) => writes.push([key, value]),
+    }
+
+    expect(loadEntries(storage)).toEqual([storedEntry])
+    expect(writes).toEqual([
+      ['hourblock.entries.v1', JSON.stringify([storedEntry])],
+    ])
+  })
+
+  it('recovers clients from legacy BlockLog local storage', () => {
+    const storedClient = { name: 'Acme Studio', hourlyRate: '125.50', website: 'https://example.com' }
+    const writes = []
+    const storage = {
+      getItem: (key) => (key === 'blocklog.clients.v1' ? JSON.stringify([storedClient]) : null),
+      setItem: (key, value) => writes.push([key, value]),
+    }
+
+    expect(loadClients(storage)).toEqual([
+      { name: 'Acme Studio', hourlyRate: 125.5, website: 'https://example.com' },
+    ])
+    expect(writes).toEqual([
+      ['hourblock.clients.v1', JSON.stringify([storedClient])],
+    ])
+  })
+
+  it('recovers an active session from legacy BlockLog local storage', () => {
+    const storedSession = {
+      id: 'session-legacy',
+      client: 'Acme Studio',
+      date: '2026-04-27',
+      startTime: '09:00',
+      startedAt: '2026-04-27T02:00:00.000Z',
+      note: 'Legacy session',
+      billable: true,
+    }
+    const writes = []
+    const storage = {
+      getItem: (key) => (key === 'blocklog.activeSession.v1' ? JSON.stringify(storedSession) : null),
+      setItem: (key, value) => writes.push([key, value]),
+    }
+
+    expect(loadActiveSession(storage)).toEqual(storedSession)
+    expect(writes).toEqual([
+      ['hourblock.activeSession.v1', JSON.stringify(storedSession)],
     ])
   })
 
