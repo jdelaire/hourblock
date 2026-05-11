@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" role="img" aria-label="HourBlock">
+  <rect width="64" height="64" rx="14" fill="#facc15"/>
+  <path fill="#18181b" d="M0 0h64v15H0z"/>
+  <path fill="#fff7ed" d="M0 0h8v8H0zm16 0h8v8h-8zm16 0h8v8h-8zm16 0h8v8h-8zM8 8h8v7H8zm16 0h8v7h-8zm16 0h8v7h-8zm16 0h8v7h-8z"/>
+  <rect x="9" y="21" width="46" height="34" rx="7" fill="#18181b"/>
+  <rect x="14" y="27" width="36" height="22" rx="4" fill="#2a251e"/>
+  <text x="32" y="43" fill="#fff7ed" font-family="Arial Black, Arial, sans-serif" font-size="18" font-weight="900" text-anchor="middle">HB</text>
+  <path fill="#fde68a" d="M18 29h28v3H18z" opacity=".95"/>
+</svg>
